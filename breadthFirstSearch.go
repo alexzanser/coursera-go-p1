@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 type Node struct {
-	key      string
+	key   string
 	child []Node
 }
 
@@ -18,39 +18,41 @@ func showTree(tree Node) {
 	}
 }
 
-func	queueInit(tree Node) (queue[] Node) {
-	
+func queueInit(tree Node) (queue []Node) {
+
+	queue = append(queue, tree)
 	if tree.child != nil {
-		queue = append(queue, tree)
 		for _, child := range tree.child {
-			queue = append(queue, queueInit(child)...)
+			queue = append(queue, child)
 		}
-	} else {
-		queue = append(queue, tree)
+		for _, child := range tree.child {
+			for _, sub_child := range child.child {
+				queue = append(queue, queueInit(sub_child)...)
+			}
+		}
 	}
-	return 
+	return
 }
 
-func nodeIsValid(tree Node) (bool) {
-	if tree.key[len(tree.key) - 1] == 'e' {
+func nodeIsValid(tree Node) bool {
+	if tree.key[len(tree.key)-1] == 'z' {
 		return true
-	} 
+	}
 	return false
 }
 
 func main() {
 	l_1_1, l_1_2 := Node{key: "Biba"}, Node{key: "Boba"}
-	l_2_1, l_2_2 := Node{key: "Vasya"}, Node{key: "Petya"}
-	l_1, l_2 := Node{key: "Alexa"}, Node{key:"Alice"}
-	l := Node{key: "MeIdiot"}
-	l_1.child = append(l_1.child, l_1_1, l_1_2)
-	l_2.child = append(l_2.child, l_2_1, l_2_2)
-	l.child = append(l.child, l_1, l_2)
+	l_2_1, l_2_2 := Node{key: "Vasya"}, Node{key: "Petyz"}
+	l_1, l_2 := Node{key: "Alexa", child : []Node {l_1_1, l_1_2}}, 
+				Node{key: "Alice", child : []Node {l_2_1, l_2_2}}
+	l := Node{key: "MeIdiot", child : []Node {l_1, l_2}}
 
 	queue := queueInit(l)
 	for _, q := range queue {
 		if nodeIsValid(q) {
 			fmt.Println(q.key)
+			break
 		}
 	}
 }
