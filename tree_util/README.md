@@ -1,8 +1,8 @@
 Утилита tree.
 
 Выводит дерево каталогов и файлов (если указана опция -f).
-"
-go run main.go . -f
+
+**go run main.go . -f
 ├───main.go (1881b)
 ├───main_test.go (1318b)
 └───testdata
@@ -18,5 +18,4 @@ go run main.go . -f
 	│		└───site.js (10b)
 	├───zline
 	│	└───empty.txt (empty)
-	└───zzfile.txt (empty)
-"
+	└───zzfile.txt (empty)**
