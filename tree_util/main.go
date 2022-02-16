@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"io"
 )
 
 func lastDirNumber(files []fs.DirEntry) int {
@@ -21,7 +20,7 @@ func getFileSize(file fs.DirEntry) int {
 	return int(info.Size())
 }
 
-func listDir(out io.Writer, path string, printFiles bool, level int, tab string) {
+func listDir(out *os.File, path string, printFiles bool, level int, tab string) {
 	files, _ := os.ReadDir(path)
 	fileSize := ""
 	symb := "├───"
@@ -46,7 +45,7 @@ func listDir(out io.Writer, path string, printFiles bool, level int, tab string)
 	}
 }
 
-func dirTree(out io.Writer, path string, printFiles bool) error {
+func dirTree(out *os.File, path string, printFiles bool) error {
 	listDir(out, path, printFiles, 0, "")
 	return nil
 }
