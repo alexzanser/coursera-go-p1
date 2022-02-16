@@ -2,7 +2,10 @@
 
 Выводит дерево каталогов и файлов (если указана опция -f).
 
-```go run main.go . -f
+go run main.go . -f
+
+```Bash
+
 ├───main.go (1881b)
 ├───main_test.go (1318b)
 └───testdata
