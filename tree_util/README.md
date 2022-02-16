@@ -19,4 +19,13 @@ go run main.go . -f
 	│		└───site.js (10b)
 	├───zline
 	│	└───empty.txt (empty)
-	└───zzfile.txt (empty)```
+	└───zzfile.txt (empty)
+	
+go run main.go .
+└───testdata
+	├───project
+	├───static
+	│	├───css
+	│	├───html
+	│	└───js
+	└───zline```
