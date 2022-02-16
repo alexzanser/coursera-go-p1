@@ -2,7 +2,7 @@
 
 Выводит дерево каталогов и файлов (если указана опция -f).
 
-<br>
+Bash
 ```go run main.go . -f
 ├───main.go (1881b)
 ├───main_test.go (1318b)
@@ -20,4 +20,4 @@
 	├───zline
 	│	└───empty.txt (empty)
 	└───zzfile.txt (empty)```
-<br>
+	
