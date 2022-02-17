@@ -2,60 +2,53 @@ package main
 
 import (
 	"fmt"
-	"sync"
-	"time"
+	// "strings"
+	// "sync"
 	// "time"
+	"time"
 )
-
-func SingleHash(in, out chan string, wg *sync.WaitGroup) {
-	defer wg.Done()	
-	val := ""
-	for {
-		val = <-in
-		time.Sleep(1000000000)
-		fmt.Println("SingleHash got: ", val)
-		out <- val
-	}
+func Single(vals ...string) <-chan string {
+	out := make(chan string, 1)
+	go func() {
+		for _, n := range vals {
+			out <- n
+		}
+		close(out)
+	}()
+	return out
 }
 
-func MultiHash(in, out chan string, wg *sync.WaitGroup) {
-	defer wg.Done()	
-	val := ""
-	for {
-		val = <-in
-		fmt.Println("MultiHash got: ", val)
-		out <- val
-	}
+func Multi(in <-chan string) <-chan string {
+    out := make(chan string, 1)
+    go func() {
+        for n := range in {
+            out <- n + "1-"
+			time.Sleep(10000000000)
+        }
+        close(out)
+    }()
+    return out
 }
 
-func CombineResults(in chan string, wg *sync.WaitGroup) {
-	defer wg.Done()	
-	val := ""
-	for {
-		val = <-in
-		fmt.Println("CombineResults got: ", val)
-	}
+func Combine(in <-chan string) <-chan string {
+    out := make(chan string, 3)
+    go func() {
+        for n := range in {
+            out <- n + "2"
+        }
+        close(out)
+    }()
+    return out
 }
 
 func main() {
 
-	wg := &sync.WaitGroup{}
 	vals := []string{"Vasya", "Kolya", "Petya"}
-	Single := make(chan string, 1)
-	Multi := make(chan string, 1)
-	Combine := make(chan string, 1)
+	s := Single(vals...)
+	m := Multi(s)
+	out := Combine(m)
 
-	wg.Add(1)
-	go SingleHash(Single, Multi, wg)
-	wg.Add(1)
-	go MultiHash(Multi, Combine, wg)
-	wg.Add(1)
-	go CombineResults(Combine, wg)
-
-	for _, val := range vals {
-		Single <- val
+	for val := range out {
+		fmt.Println(val)
 	}
-	// time.Sleep(1000000000)
-
-	wg.Wait()
 }
