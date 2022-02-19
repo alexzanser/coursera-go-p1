@@ -2,36 +2,51 @@ package main
 
 import (
 	"fmt"
-	// "strings"
-	// "sync"
-	// "time"
+	"runtime"
 	"time"
+	// "strings"
+	"sync"
 )
-func Single(vals ...string) <-chan string {
-	out := make(chan string, 1)
-	go func() {
-		for _, n := range vals {
-			out <- n
+
+func	SingleWorker(val string, out chan string, wg sync.WaitGroup) {
+		defer wg.Done()
+		runtime.Gosched()
+		val = val + "Singled"
+		time.Sleep(1000000000)
+		out <- val
+		return
+}
+
+
+func Single(vals ...string) (<-chan string) {
+    out := make(chan string, 3)
+	var wg sync.WaitGroup 
+    go func() {
+        for _, n := range vals {
+			fmt.Println("Single got", n)
+			wg.Add(1)
+			go SingleWorker(n, out, wg)
 		}
-		close(out)
-	}()
+        // close(out)
+		wg.Wait()
+    }()
 	return out
 }
 
-func Multi(in <-chan string) <-chan string {
+func Multi(in <-chan string) (<-chan string) {
     out := make(chan string, 1)
     go func() {
         for n := range in {
+			fmt.Println("Milti got", n)
             out <- n + "1-"
-			time.Sleep(10000000000)
         }
         close(out)
     }()
     return out
 }
 
-func Combine(in <-chan string) <-chan string {
-    out := make(chan string, 3)
+func Combine(in <-chan string) (<-chan string) {
+    out := make(chan string, 1)
     go func() {
         for n := range in {
             out <- n + "2"
