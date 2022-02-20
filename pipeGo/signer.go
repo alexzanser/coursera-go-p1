@@ -1,69 +1,90 @@
 package main
 
 import (
+	// "fmt"
 	"fmt"
-	"runtime"
-	"time"
-	// "strings"
+	"sort"
+	"strconv"
+	"strings"
 	"sync"
 )
 
-func	SingleWorker(val string, out chan string, wg sync.WaitGroup) {
-		defer wg.Done()
-		runtime.Gosched()
-		val = val + "Singled"
-		time.Sleep(1000000000)
-		out <- val
-		return
-}
+func ExecutePipeline(jobs ...job) {
+	var wg sync.WaitGroup
+	in := make(chan interface{})
 
-
-func Single(vals ...string) (<-chan string) {
-    out := make(chan string, 3)
-	var wg sync.WaitGroup 
-    go func() {
-        for _, n := range vals {
-			fmt.Println("Single got", n)
-			wg.Add(1)
-			go SingleWorker(n, out, wg)
-		}
-        // close(out)
-		wg.Wait()
-    }()
-	return out
-}
-
-func Multi(in <-chan string) (<-chan string) {
-    out := make(chan string, 1)
-    go func() {
-        for n := range in {
-			fmt.Println("Milti got", n)
-            out <- n + "1-"
-        }
-        close(out)
-    }()
-    return out
-}
-
-func Combine(in <-chan string) (<-chan string) {
-    out := make(chan string, 1)
-    go func() {
-        for n := range in {
-            out <- n + "2"
-        }
-        close(out)
-    }()
-    return out
-}
-
-func main() {
-
-	vals := []string{"Vasya", "Kolya", "Petya"}
-	s := Single(vals...)
-	m := Multi(s)
-	out := Combine(m)
-
-	for val := range out {
-		fmt.Println(val)
+	for _, job := range jobs {
+		wg.Add(1)
+		out := make(chan interface{})
+		go ExecuteJob(&wg, job, in, out)
+		in = out
 	}
+	wg.Wait()
+}
+
+func ExecuteJob(wg *sync.WaitGroup, curJob job, in, out chan interface{}) {
+	defer wg.Done()
+	defer close(out)
+	curJob(in, out)
+}
+
+func SingleHash(in, out chan interface{}) {
+	var wg sync.WaitGroup
+	var mu = sync.Mutex{}
+	for val := range in {
+		d, _ := val.(int)
+		s := strconv.Itoa(d)
+		wg.Add(1)
+		SingleHashWork(&wg, &mu, in, out, s)
+	}
+	wg.Wait()
+}
+
+func SingleHashWork(wg *sync.WaitGroup, mu *sync.Mutex ,in, out chan interface{}, s string) {
+	defer wg.Done()
+
+	mu.Lock()
+	md5 := DataSignerMd5(s)
+	mu.Unlock()
+	
+	crc32chan := make(chan interface{})
+	go Crc32Job(s, crc32chan)
+	src := <- crc32chan
+	go Crc32Job(md5, crc32chan)
+	mdc := <- crc32chan
+	fmt.Println( src.(string) + "~" + mdc.(string))
+	out <- src.(string) + "~" + mdc.(string)
+}
+
+func Crc32Job(s string, out chan interface{}) {
+	out <- DataSignerCrc32(s)
+}
+
+func MultiHash(in, out chan interface{}) {
+	ans := ""
+	crc32chan := make(chan interface{})
+	for val := range in {
+		ans = ""
+		s, _ := val.(string)
+		for j := 0; j < 6; j++ {
+			go Crc32Job(strconv.Itoa(j) + s, crc32chan)
+		}
+		for i:=0; i < 6; i++ {
+			add := <- crc32chan
+			fmt.Println(add)
+			ans = ans + add.(string)
+		}
+		out <- ans
+	}
+}
+
+func CombineResults(in, out chan interface{}) {
+	res := []string{}
+
+	for val := range in {
+		res = append(res, val.(string))
+	}
+	sort.Strings(res)
+	resStr := strings.Join(res, "_")
+	out <- resStr
 }
