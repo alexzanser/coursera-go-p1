@@ -1,1 +1,1 @@
-Репозиторий к курсу https://www.coursera.org/learn/golang-webservices-1/home/welcome
+Репозиторий к курсу https://www.coursera.org/learn/golang-webservices-1
