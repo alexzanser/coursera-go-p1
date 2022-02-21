@@ -1,8 +1,6 @@
 package main
 
 import (
-	// "fmt"
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -35,24 +33,25 @@ func SingleHash(in, out chan interface{}) {
 		d, _ := val.(int)
 		s := strconv.Itoa(d)
 		wg.Add(1)
-		SingleHashWork(&wg, &mu, in, out, s)
+		go SingleHashWork(&wg, &mu, in, out, s)
 	}
 	wg.Wait()
 }
 
-func SingleHashWork(wg *sync.WaitGroup, mu *sync.Mutex ,in, out chan interface{}, s string) {
+func SingleHashWork(wg *sync.WaitGroup, mu *sync.Mutex, in, out chan interface{}, s string) {
 	defer wg.Done()
+
+	crc32chan := make(chan interface{})
+	md5chan := make(chan interface{})
 
 	mu.Lock()
 	md5 := DataSignerMd5(s)
 	mu.Unlock()
-	
-	crc32chan := make(chan interface{})
+
 	go Crc32Job(s, crc32chan)
-	src := <- crc32chan
-	go Crc32Job(md5, crc32chan)
-	mdc := <- crc32chan
-	fmt.Println( src.(string) + "~" + mdc.(string))
+	go Crc32Job(md5, md5chan)
+	src := <-crc32chan
+	mdc := <-md5chan
 	out <- src.(string) + "~" + mdc.(string)
 }
 
@@ -61,21 +60,34 @@ func Crc32Job(s string, out chan interface{}) {
 }
 
 func MultiHash(in, out chan interface{}) {
-	ans := ""
-	crc32chan := make(chan interface{})
+	var wg sync.WaitGroup
 	for val := range in {
-		ans = ""
 		s, _ := val.(string)
-		for j := 0; j < 6; j++ {
-			go Crc32Job(strconv.Itoa(j) + s, crc32chan)
-		}
-		for i:=0; i < 6; i++ {
-			add := <- crc32chan
-			fmt.Println(add)
-			ans = ans + add.(string)
-		}
-		out <- ans
+		wg.Add(1)
+		go MultiHashLaunch(&wg, s, out)
 	}
+	wg.Wait()
+}
+
+func MultiHashLaunch(wg *sync.WaitGroup, s string, out chan interface{}) {
+	defer wg.Done()
+
+	var wgMod sync.WaitGroup
+	arr := make([]string, 6)
+
+	crc32chan := make(chan interface{})
+	for j := 0; j < 6; j++ {
+		wgMod.Add(1)
+		go Crc32JobMod(&wgMod, &arr[j], strconv.Itoa(j)+s, crc32chan)
+	}
+	wgMod.Wait()
+	ans := strings.Join(arr, "")
+	out <- ans
+}
+
+func Crc32JobMod(wg *sync.WaitGroup, arr *string, s string, out chan interface{}) {
+	defer wg.Done()
+	*arr = DataSignerCrc32(s)
 }
 
 func CombineResults(in, out chan interface{}) {
