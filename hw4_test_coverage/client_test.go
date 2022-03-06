@@ -71,4 +71,4 @@ func CheckoutDummy(w http.ResponseWriter, r *http.Request) {
 		default:
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	}
+}
