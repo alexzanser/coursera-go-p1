@@ -8,16 +8,30 @@ import (
 	"io"
 )
 
-// type TestCase struct {
-// 	ID 			string
-// 	Response 	string
-// 	StatusCode 	int
-// }
+type TestCase struct {
+	ID 			string
+	Result		string
+	StatusCode 	int
+}
 
+type User struct {
+	Id     int
+	Name   string
+	Age    int
+	About  string
+	Gender string
+}
+
+// type SearchResponse struct {
+	Users    []User
+	NextPage bool
+// }
 
 type Cart struct {
 	PaymentApiURL string
 }
+
+
 
 func TestCartCheckout(t *testing.T) {
 	cases := []TestCase{
