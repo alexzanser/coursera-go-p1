@@ -1,0 +1,25 @@
+mode: set
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:67.80,72.19 2 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:75.2,75.20 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:78.2,78.20 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:83.2,95.16 10 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:101.2,104.25 3 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:120.2,122.16 3 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:125.2,127.28 3 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:133.2,133.21 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:72.19,74.3 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:75.20,77.3 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:78.20,80.3 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:95.16,96.54 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:99.3,99.50 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:96.54,98.4 1 0
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:105.31,106.44 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:107.38,108.53 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:109.29,112.17 3 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:115.3,115.44 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:118.3,118.73 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:112.17,114.4 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:115.44,117.4 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:122.16,124.3 1 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:127.28,130.3 2 1
+/home/alexzanser/VS_projects/Coursera_golang/Coursera_Golang/hw4_test_coverage/client.go:130.8,132.3 1 1
