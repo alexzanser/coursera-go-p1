@@ -119,6 +119,7 @@ func (srv *SearchClient) FindUsers(req SearchRequest) (*SearchResponse, error) {
 
 	data := []User{}
 	err = json.Unmarshal(body, &data)
+	fmt.Println("AAAAAAAAAAAAAA", data)
 	if err != nil {
 		return nil, fmt.Errorf("cant unpack result json: %s", err)
 	}
